@@ -182,7 +182,7 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="flex flex-col justify-center items-center mt-20">
       <h1 className="text-xl font-bold text-center mb-3">
         Diabetes Prediction Algorithm
       </h1>
