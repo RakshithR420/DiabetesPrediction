@@ -16,20 +16,34 @@ with open('scaler.pkl', 'rb') as f:
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/predict', methods=['POST'])
+@app.route("/predict", methods=["POST"])
 def predict():
     data = request.get_json()
-    features = np.array(data['features']).reshape(1, -1)
-    features_scaled = scaler.transform(features)
-    pred, prob = nn.predict(features_scaled)
+    print("Received data:", data)
 
-    result = {
-        "prediction": int(pred[0][0]),
-        "probability": float(prob[0][0])
-    }
-    print(result)
-    return jsonify(result)
+    # Extract the values in the correct order your model expects
+    features = [
+        float(data.get("pregnancies", 0)),
+        float(data["glucose"]),
+        float(data["bloodPressure"]),
+        float(data["skinThickness"]),
+        float(data["insulin"]),
+        float(data["bmi"]),
+        float(data.get("diabetesPedigreeFunction", 0)),  # if used
+        float(data["age"]),
+    ]
 
+    # shape for model
+    features = np.array(features).reshape(1, -1)
+
+    # dummy prediction
+    prediction = 1 if features[0][1] > 125 else 0
+    probability = [0.2, 0.8] if prediction else [0.9, 0.1]
+
+    return jsonify({
+        "prediction": prediction,
+        "probability": probability
+    })
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
