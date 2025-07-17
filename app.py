@@ -33,17 +33,19 @@ def predict():
         float(data["age"]),
     ]
 
-    # shape for model
     features = np.array(features).reshape(1, -1)
+    features_scaled = scaler.transform(features)
+    print("features:",features)
 
-    # dummy prediction
-    prediction = 1 if features[0][1] > 125 else 0
-    probability = [0.2, 0.8] if prediction else [0.9, 0.1]
+    pred,prob = nn.predict(features_scaled)
+    print("Prediction and probability:",pred,prob)
 
     return jsonify({
-        "prediction": prediction,
-        "probability": probability
+        "prediction": pred[0][0],        # 0 or 1
+        "probability": prob[0][0]
     })
+
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

@@ -158,7 +158,7 @@ function App() {
     const formData = new FormData(e.target);
     const newData = Object.fromEntries(formData.entries());
     const finalData = { ...basicData, ...newData };
-    console.log(finalData);
+    //console.log(finalData);
 
     try {
       const response = await fetch("http://127.0.0.1:5000/predict", {
@@ -166,12 +166,10 @@ function App() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(finalData),
+        body: JSON.stringify({
+          finalData,
+        }),
       });
-
-      if (!response.ok) {
-        throw new Error("Server error");
-      }
 
       const resultData = await response.json();
       console.log("Prediction result:", resultData);
@@ -354,14 +352,14 @@ function App() {
             <span className="text-gray-200">
               Class 0 (No Diabetes):{" "}
               <span className="font-mono">
-                {Number(result.probability[0]).toFixed(3)}
+                {Number(1 - result.probability).toFixed(3)}
               </span>
             </span>
             <br />
             <span className="text-gray-200">
               Class 1 (Diabetes):{" "}
               <span className="font-mono">
-                {Number(result.probability[1]).toFixed(3)}
+                {Number(result.probability).toFixed(3)}
               </span>
             </span>
           </p>
